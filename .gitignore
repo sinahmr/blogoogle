@@ -1,0 +1,7 @@
+content/
+
+.idea/
+
+# compiled files
+__pycache__/
+**/*.py[cod]
