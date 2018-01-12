@@ -14,14 +14,19 @@ from scrapy.exceptions import DropItem
 class DuplicatesPipeline(object):
 
     def __init__(self):
-        self.urls_seen = set()
+        self.blogs_seen = set()
 
     def process_item(self, item, spider):
-        if item['type'] == 'blog' and item['blog_url'] in self.urls_seen:
-            raise DropItem("Duplicate url found: %s" % item['blog_url'])
-        else:
-            self.urls_seen.add(item['blog_url'])
-            return item
+        if item['type'] == 'blog':
+            if len(self.blogs_seen) == spider.n:
+                spider.crawler.engine.close_spider(spider)  # TODO posts remaining in the queue are not processed :|
+                raise DropItem('(%s) It is enough for blogs themselves, \
+                                now we only continue creating queued posts and then exit' % item['blog_url'])
+            elif item['blog_url'] in self.blogs_seen:
+                raise DropItem('Duplicate url found: %s' % item['blog_url'])
+            else:
+                self.blogs_seen.add(item['blog_url'])
+        return item
 
 
 class JsonWriterPipeline(object):
@@ -44,5 +49,5 @@ class JsonWriterPipeline(object):
             item_name = item['blog_url'].split('.blog.ir')[0].split('/')[-1] + ' (%s)' % item['post_url'].split('/')[-1]  # TODO encoding (name too long error)
         filepath = '%s/%s/%s.json' % (self.ROOT_FOLDER, item_type, item_name)
         with open(filepath, 'w') as file:
-            file.write(json.dumps(dict(item)))
+            file.write(json.dumps(dict(item), ensure_ascii=False))
         return item
