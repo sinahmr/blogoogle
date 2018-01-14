@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import json
 import os
 import shutil
@@ -11,17 +5,19 @@ import shutil
 from scrapy.exceptions import DropItem
 
 
-class DuplicatesPipeline(object):
-
+class CheckerPipeline(object):
     def __init__(self):
         self.blogs_seen = set()
 
     def process_item(self, item, spider):
         if item['type'] == 'blog':
             if len(self.blogs_seen) == spider.n:
-                spider.crawler.engine.close_spider(spider)  # TODO posts remaining in the queue are not processed :|
-                raise DropItem('(%s) It is enough for blogs themselves, \
-                                now we only continue creating queued posts and then exit' % item['blog_url'])
+                # posts remaining in the queue are not processed by using the line below, so this isn't good
+                # spider.crawler.engine.close_spider(spider)
+                spider.continue_crawling_blogs = False
+                raise DropItem(
+                    '(%s) It is enough for blogs themselves, now we only continue creating queued posts and then exit' %
+                    item['blog_url'])
             elif item['blog_url'] in self.blogs_seen:
                 raise DropItem('Duplicate url found: %s' % item['blog_url'])
             else:

@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 class BlogSpider(scrapy.Spider):
     name = 'blogs'
     allowed_domains = ['blog.ir']
-    # custom_settings = dict()
+    continue_crawling_blogs = True
 
     def add_rss_to_url(self, url):
         if url[-1] == '/':
@@ -21,7 +21,6 @@ class BlogSpider(scrapy.Spider):
         self.start_urls = [self.add_rss_to_url(url) for url in start_urls.split(',')]
         self.in_degree = int(in_degree)
         self.n = int(n)
-        # self.custom_settings['CLOSESPIDER_ITEMCOUNT'] = n
         # logging.getLogger('scrapy').setLevel(logging.WARNING)
 
     def parse(self, response):
@@ -57,5 +56,6 @@ class BlogSpider(scrapy.Spider):
             'comment_urls': comment_urls
         }
 
-        for url in comment_urls[:self.in_degree]:
-            yield response.follow(self.add_rss_to_url(url), callback=self.parse)
+        if self.continue_crawling_blogs:
+            for url in comment_urls[:self.in_degree]:
+                yield response.follow(self.add_rss_to_url(url), callback=self.parse)

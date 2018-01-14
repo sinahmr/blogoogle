@@ -70,7 +70,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'crawler.scraper.pipelines.DuplicatesPipeline': 800,
+   'crawler.scraper.pipelines.CheckerPipeline': 800,
    'crawler.scraper.pipelines.JsonWriterPipeline': 1000,
 }
 
