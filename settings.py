@@ -9,7 +9,7 @@ ELASTIC_INDEX_CONFIG = {
             'number_of_shards': 1,
             'number_of_replicas': 0,
             'blocks': {
-                'read_only_allow_delete': 'false'
+                'read_only': False
             }
         }
     }

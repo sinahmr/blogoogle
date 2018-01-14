@@ -36,10 +36,27 @@ def ui_indexer():
                        '2) Delete the index\n\t'
                        '3) Back\n')
         if chosen == '1' or chosen == '۱':
-            indexer.index()  # TODO AuthorizationException occurs seldom
+            directory = input('JSONs directory? (default to ./content/) ')
+            es_connection = input('Elasticsearch connection? (default to localhost:9200) ')
+            params = dict()
+            if directory:
+                params['directory'] = directory
+            if es_connection:
+                params['es_connection'] = {
+                    'host': es_connection.split(':')[0],
+                    'port': int(es_connection.split(':')[1]),
+                }
+            indexer.index(**params)  # TODO AuthorizationException, I think it's gone
             print('Done.')
         elif chosen == '2' or chosen == '۲':
-            indexer.delete_index()
+            es_connection = input('Elasticsearch connection? (default to localhost:9200) ')
+            if es_connection:
+                indexer.delete_index(es_connection={
+                    'host': es_connection.split(':')[0],
+                    'port': int(es_connection.split(':')[1]),
+                })
+            else:
+                indexer.delete_index()
             print('Done.')
 
 
