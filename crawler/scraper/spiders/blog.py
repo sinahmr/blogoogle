@@ -38,8 +38,8 @@ class BlogSpider(scrapy.Spider):
             data['post_content_%d' % (i+1)] = BeautifulSoup(post.find('description').string, 'html.parser').get_text()
         yield data
 
-        for url in post_urls:
-            yield response.follow(url, callback=self.parse_post)
+        for i, url in enumerate(post_urls):
+            yield response.follow(url, callback=self.parse_post, meta={'post_num': i+1})
 
     def parse_post(self, response):
         soup = BeautifulSoup(response.body, 'html.parser')
@@ -48,12 +48,14 @@ class BlogSpider(scrapy.Spider):
         for comment in soup.find_all(class_='post_comments'):
             url = comment.find('a', class_='website')['href'] if comment.find('a', class_='website') else None
             if url and re.search('.+\.blog.ir', url):
-                comment_urls.append(response.urljoin(url))
+                if url not in comment_urls:
+                    comment_urls.append(response.urljoin(url))
         yield {
             'type': 'post',
             'blog_url': '%s.blog.ir' % response.url.split('.blog.ir')[0],
             'post_url': urllib.parse.unquote(response.url),
-            'comment_urls': comment_urls
+            'comment_urls': comment_urls,
+            'post_num': response.meta['post_num']
         }
 
         if self.continue_crawling_blogs:

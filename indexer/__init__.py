@@ -39,13 +39,13 @@ def index(directory='content', es_connection=settings.ELASTIC_CONNECTION):
                     }
 
                     # Fetching comment urls
-                    comment_urls = set()
-                    for post_file_name in os.listdir('%s/post' % directory):
-                        if post_file_name.startswith(blog_name):
-                            with open('%s/post/%s' % (directory, post_file_name), 'r') as post_file:
-                                for comment_url in json.load(post_file)['comment_urls']:
-                                    comment_urls.add(comment_url)
-                    for comment_url in comment_urls:  # TODO this is a set without order, it it important?
+                    comment_urls = list()
+                    post_file_name = '%s (%d).json' % (blog_name, i)
+                    with open('%s/post/%s' % (directory, post_file_name), 'r') as post_file:
+                        for comment_url in json.load(post_file)['comment_urls']:
+                            if comment_url not in comment_urls:
+                                comment_urls.append(comment_url)
+                    for comment_url in comment_urls:
                         post['post_comments'].append({
                             'comment_url': comment_url
                         })

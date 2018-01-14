@@ -42,7 +42,9 @@ class JsonWriterPipeline(object):
         if item_type == 'blog':
             item_name = item['blog_url'].split('.blog.ir')[0].split('/')[-1]
         else:
-            item_name = item['blog_url'].split('.blog.ir')[0].split('/')[-1] + ' (%s)' % item['post_url'].split('/')[-1]
+            post_num = item['post_num']
+            item_name = item['blog_url'].split('.blog.ir')[0].split('/')[-1] + ' (%d)' % post_num
+            del item['post_num']
         filepath = '%s/%s/%s.json' % (self.ROOT_FOLDER, item_type, item_name)
         with open(filepath, 'w') as file:
             file.write(json.dumps(dict(item), ensure_ascii=False))
