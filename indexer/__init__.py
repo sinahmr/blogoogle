@@ -42,7 +42,9 @@ def index(directory='content', es_connection=settings.ELASTIC_CONNECTION):
                     comment_urls = list()
                     post_file_name = '%s (%d).json' % (blog_name, i)
                     with open('%s/post/%s' % (directory, post_file_name), 'r') as post_file:
-                        for comment_url in json.load(post_file)['comment_urls']:
+                        loaded_post = json.load(post_file)
+                        post['post_full_content'] = loaded_post['post_full_content']
+                        for comment_url in loaded_post['comment_urls']:
                             if comment_url not in comment_urls:
                                 comment_urls.append(comment_url)
                     for comment_url in comment_urls:

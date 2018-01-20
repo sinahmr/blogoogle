@@ -43,7 +43,13 @@ class BlogSpider(scrapy.Spider):
 
     def parse_post(self, response):
         soup = BeautifulSoup(response.body, 'html.parser')
-        # post_content = soup.find(class_='post').find(class_='body').find_all('div', class_='cnt')[0].get_text().strip()  # TODO Emtiazi
+        try:
+            post_container = soup.find('div', class_='post') or soup.find('div', id='block-post')
+            post_full_content = post_container.find('div', {'class': ['body', 'post-matn', 'post-content', 'main-post',
+                                                                      'postbody', 'post-con', 'context', 'post-body']})\
+                .get_text().strip()
+        except AttributeError:
+            post_full_content = ''
         comment_urls = list()
         for comment in soup.find_all(class_='post_comments'):
             url = comment.find('a', class_='website')['href'] if comment.find('a', class_='website') else None
@@ -55,6 +61,7 @@ class BlogSpider(scrapy.Spider):
             'blog_url': '%s.blog.ir' % response.url.split('.blog.ir')[0],
             'post_url': urllib.parse.unquote(response.url),
             'comment_urls': comment_urls,
+            'post_full_content': post_full_content,
             'post_num': response.meta['post_num']
         }
 
