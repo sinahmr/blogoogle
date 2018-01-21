@@ -16,8 +16,8 @@ def index(directory='content', es_connection=settings.ELASTIC_CONNECTION):
     if not es.indices.exists(index=settings.INDEX_NAME):
         es.indices.create(index=settings.INDEX_NAME, body=settings.ELASTIC_INDEX_CONFIG)
     for blog_file_name in os.listdir('%s/blog' % directory):
-        with open('%s/blog/%s' % (directory, blog_file_name), 'r') as blog_file:
-            blog = json.load(blog_file)
+        with open('%s/blog/%s' % (directory, blog_file_name), 'r', encoding='utf-8') as blog_file:
+            blog = json.loads(blog_file.read())
             doc = {
                 'blog': {
                     'url': blog['blog_url'],
@@ -41,8 +41,8 @@ def index(directory='content', es_connection=settings.ELASTIC_CONNECTION):
                     # Fetching comment urls
                     comment_urls = list()
                     post_file_name = '%s (%d).json' % (blog_name, i)
-                    with open('%s/post/%s' % (directory, post_file_name), 'r') as post_file:
-                        loaded_post = json.load(post_file)
+                    with open('%s/post/%s' % (directory, post_file_name), 'r', encoding='utf-8') as post_file:
+                        loaded_post = json.loads(post_file.read())
                         post['post_full_content'] = loaded_post['post_full_content']
                         for comment_url in loaded_post['comment_urls']:
                             if comment_url not in comment_urls:
