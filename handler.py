@@ -1,7 +1,9 @@
 from subprocess import call
 
-import crawler
+# import crawler
 import indexer
+import pageranker
+import searcher
 
 
 # start_urls = [
@@ -60,19 +62,50 @@ def ui_indexer():
             print('Done.')
 
 
+def ui_pageRanker():
+    print('PageRanker')
+    es_connection = input('Elasticsearch connection? (default to localhost:9200) ')
+    params = dict()
+    if es_connection:
+        params['es_connection'] = {
+        'host': es_connection.split(':')[0],
+        'port': int(es_connection.split(':')[1]),
+        }
+        pageranker.pagerank(**params)
+        print('Done.')
+
+
+
+def ui_searcher():
+    print('Searcher') # HERE!!!
+    es_connection = input('Elasticsearch connection? (default to localhost:9200) ')
+    params = dict()
+    if es_connection:
+        params['es_connection'] = {
+        'host': es_connection.split(':')[0],
+        'port': int(es_connection.split(':')[1]),
+        }
+        searcher.search(**params)
+        print('Done.')
+
+
 def ui_main():
     chosen = None
     while chosen != '5' and chosen != '۵':
         chosen = input('Choose:\n\t'
                        '1) Crawler\n\t'
                        '2) Indexer\n\t'
-                       '3) TBD\n\t'
-                       '4) TBD\n\t'
+                       '3) PageRanker\n\t'
+                       '4) Searcher\n\t'
                        '5) Exit\n')
         if chosen == '1' or chosen == '۱':
             ui_crawler()
         elif chosen == '2' or chosen == '۲':
             ui_indexer()
+        elif chosen == '3' or chosen == '۳':
+            ui_pageRanker()
+        elif chosen == '4' or chosen == '۳': # insert persian 4
+            ui_searcher()
 
 
 if __name__ == '__main__':
