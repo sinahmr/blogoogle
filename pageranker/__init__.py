@@ -111,6 +111,6 @@ def pagerank(es_connection=settings.ELASTIC_CONNECTION):
         link = hit['_source']['blog']['url']
         if link[-1] == '/':
             link = link[0:len(link)-1]
-        doc['pagerank'] = scaled[urls[link]]
+        doc['blog']['pagerank'] = scaled[urls[link]]
         es.index(index=settings.INDEX_NAME, doc_type='doc', id=hit["_id"], body=doc)
 
