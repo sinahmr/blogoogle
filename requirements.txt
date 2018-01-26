@@ -1,3 +1,5 @@
 scrapy
 beautifulsoup4
 elasticsearch
+numpy
+scipy

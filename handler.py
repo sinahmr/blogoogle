@@ -12,7 +12,7 @@ import searcher
 #     'http://sirnarenji.blog.ir/',
 #     'http://arameeesh.blog.ir/'
 # ]
-# start_urls = ','.join(start_urls)
+
 
 def ui_crawler():
     print('Crawler')
@@ -26,7 +26,7 @@ def ui_crawler():
         command += ' -a n=%s' % n
     # We run crawler like the line below because calling crawler API wouldn't load settings
     call(command, shell=True, cwd='crawler')
-    # crawler.run(start_urls, in_degree, n)  # For debugging purposes TODO delete
+    # crawler.run(start_urls, in_degree, n)  # For debugging purposes
 
 
 def ui_indexer():
@@ -48,7 +48,7 @@ def ui_indexer():
                     'host': es_connection.split(':')[0],
                     'port': int(es_connection.split(':')[1]),
                 }
-            indexer.index(**params)  # TODO AuthorizationException, I think it's gone
+            indexer.index(**params)
             print('Done.')
         elif chosen == '2' or chosen == '۲':
             es_connection = input('Elasticsearch connection? (default to localhost:9200) ')
@@ -62,31 +62,32 @@ def ui_indexer():
             print('Done.')
 
 
-def ui_pageRanker():
+def ui_pageranker():
     print('PageRanker')
     es_connection = input('Elasticsearch connection? (default to localhost:9200) ')
+    alpha = input('Alpha? (default to 0.2) ')
     params = dict()
     if es_connection:
         params['es_connection'] = {
-        'host': es_connection.split(':')[0],
-        'port': int(es_connection.split(':')[1]),
+            'host': es_connection.split(':')[0],
+            'port': int(es_connection.split(':')[1]),
         }
-        pageranker.pagerank(**params)
-        print('Done.')
-
+    if alpha:
+        params['alpha'] = float(alpha)
+    pageranker.pagerank(**params)
+    print('Done.')
 
 
 def ui_searcher():
-    print('Searcher') # HERE!!!
+    print('Searcher')
     es_connection = input('Elasticsearch connection? (default to localhost:9200) ')
     params = dict()
     if es_connection:
         params['es_connection'] = {
-        'host': es_connection.split(':')[0],
-        'port': int(es_connection.split(':')[1]),
+            'host': es_connection.split(':')[0],
+            'port': int(es_connection.split(':')[1]),
         }
-        searcher.search(**params)
-        print('Done.')
+    searcher.search(**params)
 
 
 def ui_main():
@@ -103,8 +104,8 @@ def ui_main():
         elif chosen == '2' or chosen == '۲':
             ui_indexer()
         elif chosen == '3' or chosen == '۳':
-            ui_pageRanker()
-        elif chosen == '4' or chosen == '۳': # insert persian 4
+            ui_pageranker()
+        elif chosen == '4' or chosen == '۴':
             ui_searcher()
 
 

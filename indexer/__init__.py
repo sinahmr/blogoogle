@@ -54,5 +54,4 @@ def index(directory='content', es_connection=settings.ELASTIC_CONNECTION):
                     doc['blog']['posts'].append(post)
                 except KeyError:
                     pass
-            #print(doc)
             es.index(index=settings.INDEX_NAME, doc_type='doc', id=blog_name, body=doc)

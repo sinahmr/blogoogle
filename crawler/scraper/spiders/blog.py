@@ -27,15 +27,16 @@ class BlogSpider(scrapy.Spider):
         soup = BeautifulSoup(response.body, 'xml')
         data = {
             'type': 'blog',
-            'blog_name': soup.find('title').string,
-            'blog_url': soup.find('link').string
+            'blog_name': soup.find('title').string or '',
+            'blog_url': soup.find('link').string or ''
         }
         post_urls = list()
         for i, post in enumerate(soup.find_all('item')[:5]):
             post_urls.append(post.find('link').string)
-            data['post_url_%d' % (i+1)] = urllib.parse.unquote(post.find('link').string)
-            data['post_title_%d' % (i+1)] = post.find('title').string
-            data['post_content_%d' % (i+1)] = BeautifulSoup(post.find('description').string, 'html.parser').get_text()
+            data['post_url_%d' % (i+1)] = urllib.parse.unquote(post.find('link').string or '')
+            data['post_title_%d' % (i+1)] = post.find('title').string or ''
+            data['post_content_%d' % (i+1)] = BeautifulSoup(post.find('description').string or '', 'html.parser')\
+                .get_text()
         yield data
 
         for i, url in enumerate(post_urls):
