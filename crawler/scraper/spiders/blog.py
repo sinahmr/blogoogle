@@ -63,7 +63,7 @@ class BlogSpider(scrapy.Spider):
             'post_url': urllib.parse.unquote(response.url),
             'comment_urls': comment_urls,
             'post_full_content': post_full_content,
-            'post_num': response.meta['post_num']
+            # 'post_num': response.meta['post_num']
         }
 
         if self.continue_crawling_blogs:

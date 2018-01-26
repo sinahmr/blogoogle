@@ -32,26 +32,21 @@ class CheckerPipeline(object):
 
 
 class JsonWriterPipeline(object):
-    ROOT_FOLDER = '../content'
+    ROOT_FOLDER = '../result'
+
+    def __init__(self):
+        self.num = 0
 
     def open_spider(self, spider):
         shutil.rmtree(self.ROOT_FOLDER, ignore_errors=True, onerror=None)
         os.mkdir(self.ROOT_FOLDER)
-        os.mkdir('%s/blog' % self.ROOT_FOLDER)
-        os.mkdir('%s/post' % self.ROOT_FOLDER)
 
     def close_spider(self, spider):
         pass
 
     def process_item(self, item, spider):
-        item_type = item['type']
-        if item_type == 'blog':
-            item_name = item['blog_url'].split('.blog.ir')[0].split('/')[-1]
-        else:
-            post_num = item['post_num']
-            item_name = item['blog_url'].split('.blog.ir')[0].split('/')[-1] + ' (%d)' % post_num
-            del item['post_num']
-        filepath = '%s/%s/%s.json' % (self.ROOT_FOLDER, item_type, item_name)
+        filepath = '%s/%d.json' % (self.ROOT_FOLDER, self.num)
         with open(filepath, 'w') as file:
             file.write(json.dumps(dict(item), ensure_ascii=False))
+        self.num += 1
         return item

@@ -38,7 +38,7 @@ def ui_indexer():
                        '2) Delete the index\n\t'
                        '3) Back\n')
         if chosen == '1' or chosen == '۱':
-            directory = input('JSONs directory? (default to ./content/) ')
+            directory = input('JSONs directory? (default to ./result/) ')
             es_connection = input('Elasticsearch connection? (default to localhost:9200) ')
             params = dict()
             if directory:
