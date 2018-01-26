@@ -25,7 +25,8 @@ def index(directory='result', es_connection=settings.ELASTIC_CONNECTION):
                     'blog': {
                         'url': obj['blog_url'],
                         'title': obj['blog_name'],
-                        'posts': []
+                        'posts': [],
+                        'pagerank': 0
                     }
                 }
 
