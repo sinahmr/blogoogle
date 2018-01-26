@@ -90,7 +90,18 @@ def ui_searcher():
     searcher.search(**params)
 
 
+def startup():
+    import requests
+    try:
+        data = '{"transient": {"cluster.routing.allocation.disk.threshold_enabled": false}}'
+        headers = {"Content-Type": "application/json"}
+        requests.put('http://localhost:9200/_cluster/settings', data=data, headers=headers)
+    except Exception:
+        pass
+
+
 def ui_main():
+    startup()
     chosen = None
     while chosen != '5' and chosen != '۵':
         chosen = input('Choose:\n\t'

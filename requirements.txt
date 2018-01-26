@@ -3,3 +3,4 @@ beautifulsoup4
 elasticsearch
 numpy
 scipy
+requests
