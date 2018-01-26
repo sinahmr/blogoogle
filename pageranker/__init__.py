@@ -7,7 +7,7 @@ import settings
 
 def pagerank(es_connection=settings.ELASTIC_CONNECTION, alpha=0.2):
     es = Elasticsearch([es_connection])
-    res = es.search(index=settings.INDEX_NAME, body={"query": {"match_all": {}}}, size=10000)  # TODO size?
+    res = es.search(index=settings.INDEX_NAME, body={"query": {"match_all": {}}}, size=10000)
     urls = {}
     urls_T = list()
     i = 0
@@ -28,7 +28,7 @@ def pagerank(es_connection=settings.ELASTIC_CONNECTION, alpha=0.2):
                 link = comment['comment_url']
                 if link[-1] == '/':
                     link = link[:-1]
-                if link in urls:  # TODO -it's possible to reference external blogs right?! +I don't think so
+                if link in urls:
                     graph_t[i].append(urls[link])
         i += 1
 
