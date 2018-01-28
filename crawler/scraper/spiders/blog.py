@@ -21,7 +21,8 @@ class BlogSpider(scrapy.Spider):
         self.start_urls = [self.add_rss_to_url(url) for url in start_urls.split(',')]
         self.in_degree = int(in_degree)
         self.n = int(n)
-        # logging.getLogger('scrapy').setLevel(logging.WARNING)
+        logging.getLogger('scrapy').setLevel(logging.ERROR)
+        logging.getLogger('chardet').setLevel(logging.ERROR)
 
     def parse(self, response):
         soup = BeautifulSoup(response.body, 'xml')
